@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "Failed Recipient Extractor [Bounce Mail]",
+  "version": "1.1.2",
+  "description": "Extracts unique recipient addresses from selected non-delivery reports and failed delivery notifications.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "example@example.local",
+      "strict_min_version": "102.0"
+    }
+  },
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "messagesRead",
+    "clipboardWrite"
+  ],
+  "browser_action": {
+    "default_title": "Fail-mail",
+    "default_popup": "mainPopup/popup.html",
+    "default_icon": "icons/icon32.png"
+  }
+}
