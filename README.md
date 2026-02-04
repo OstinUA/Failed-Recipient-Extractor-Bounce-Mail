@@ -6,20 +6,16 @@
 
 ### Key Features
 
-* 
-**Automated Extraction**: Scans selected messages for failed recipient headers including `X-Failed-Recipients`, `Final-Recipient`, and `Original-Recipient`.
+* **Automated Extraction**: Scans selected messages for failed recipient headers including `X-Failed-Recipients`, `Final-Recipient`, and `Original-Recipient`.
 
 
-* 
-**Deep Parsing**: Detects recipient addresses within embedded `message/rfc822` parts of delivery status notifications.
+* **Deep Parsing**: Detects recipient addresses within embedded `message/rfc822` parts of delivery status notifications.
 
 
-* 
-**Smart Filtering**: Automatically converts addresses to lowercase, removes duplicates, and sorts them alphabetically.
+* **Smart Filtering**: Automatically converts addresses to lowercase, removes duplicates, and sorts them alphabetically.
 
 
-* 
-**Clipboard Integration**: Copies the final list of unique emails directly to the system clipboard for easy export to Google Sheets or other tools.
+* **Clipboard Integration**: Copies the final list of unique emails directly to the system clipboard for easy export to Google Sheets or other tools.
 
 
 
@@ -63,16 +59,13 @@ To use this extension without installing it from the official store:
 
 **1. Development Environment**
 
-* 
-**Language**: Vanilla JavaScript (ES6+), HTML5, CSS3.
+* **Language**: Vanilla JavaScript (ES6+), HTML5, CSS3.
 
 
-* 
-**API**: Thunderbird MailExtension (WebExtension) API.
+* **API**: Thunderbird MailExtension (WebExtension) API.
 
 
-* 
-**Build Tools**: No transpilers, minifiers, or machine-generation tools were used. All code is human-readable.
+* **Build Tools**: No transpilers, minifiers, or machine-generation tools were used. All code is human-readable.
 
 
 
