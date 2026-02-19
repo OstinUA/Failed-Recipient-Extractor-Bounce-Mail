@@ -1,11 +1,11 @@
 {
   "manifest_version": 2,
   "name": "Failed Recipient Extractor [Bounce Mail]",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Extracts unique recipient addresses from selected non-delivery reports and failed delivery notifications.",
   "browser_specific_settings": {
     "gecko": {
-      "id": "example@example.local",
+      "id": "bounce-mail-extractor@thunderbird.local",
       "strict_min_version": "102.0"
     }
   },
@@ -15,7 +15,8 @@
   },
   "permissions": [
     "messagesRead",
-    "clipboardWrite"
+    "clipboardWrite",
+    "activeTab"
   ],
   "browser_action": {
     "default_title": "Fail-mail",
