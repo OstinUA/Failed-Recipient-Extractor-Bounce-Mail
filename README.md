@@ -1,6 +1,6 @@
 # Failed Email Extractor [Bounce Mail]
 
-![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.3.1-blue.svg)
 ![Thunderbird Support](https://img.shields.io/badge/Thunderbird-102.0+-ca3026.svg?logo=thunderbird&logoColor=white)
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 
