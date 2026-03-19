@@ -1,3 +1,13 @@
+/**
+ * Appends a timestamped debug message to the popup log textarea.
+ *
+ * @param {string} msg Message text to append to the debug log output.
+ * @returns {void} Does not return a value.
+ *
+ * @example
+ * logDebug("Extraction started");
+ * // Appends a line such as "[10:15:30 AM] Extraction started"
+ */
 function logDebug(msg) {
   const logBox = document.getElementById("debugLogs");
   if (logBox) {
@@ -7,6 +17,16 @@ function logDebug(msg) {
   }
 }
 
+/**
+ * Extracts the first email address found within a raw header or body string.
+ *
+ * @param {?string} rawText Source text that may contain an email address.
+ * @returns {?string} The first matched email address, or `null` when no address is found.
+ *
+ * @example
+ * cleanEmail("Final-Recipient: rfc822; User@example.com");
+ * // Returns: "User@example.com"
+ */
 function cleanEmail(rawText) {
   if (!rawText) return null;
   const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/;
@@ -14,6 +34,19 @@ function cleanEmail(rawText) {
   return match ? match[1] : null;
 }
 
+/**
+ * Finds the bounced recipient address in a raw email message.
+ *
+ * The parser checks the most reliable bounce headers first and then falls back to
+ * embedded message content and standard `To` headers when necessary.
+ *
+ * @param {string} content Full raw message source for a bounced email.
+ * @returns {?string} The failed recipient email address, or `null` when no candidate is found.
+ *
+ * @example
+ * findFailedRecipient("X-Failed-Recipients: user@example.com");
+ * // Returns: "user@example.com"
+ */
 function findFailedRecipient(content) {
   let match = content.match(/^X-Failed-Recipients:\s*(.*)/im);
   if (match) return cleanEmail(match[1]);
@@ -33,57 +66,79 @@ function findFailedRecipient(content) {
   match = content.match(/^To:\s*(.*)/im);
   if (match) {
     const potentialEmail = cleanEmail(match[1]);
-    if (potentialEmail && !potentialEmail.includes('mailer-daemon') && !potentialEmail.includes('postmaster')) {
+    if (potentialEmail && !potentialEmail.includes("mailer-daemon") && !potentialEmail.includes("postmaster")) {
       return potentialEmail;
     }
   }
   return null;
 }
 
+/**
+ * Fetches every currently selected message from a Thunderbird mail tab.
+ *
+ * The Thunderbird MailExtension API returns paginated selections, so this function
+ * follows continuation pages until all selected messages have been collected.
+ *
+ * @param {number} tabId Identifier of the active Thunderbird mail tab.
+ * @returns {Promise<Object[]>} A promise that resolves to the complete list of selected message objects.
+ *
+ * @example
+ * const messages = await getAllSelectedMessages(12);
+ * // Returns: [{ id: 101, ... }, { id: 102, ... }]
+ */
 async function getAllSelectedMessages(tabId) {
   logDebug(`Fetching selected messages for tabId: ${tabId}`);
   let page = await browser.mailTabs.getSelectedMessages(tabId);
   const all = [];
   all.push(...(page.messages || []));
-  
+
   while (page && page.id) {
     page = await browser.messages.continueList(page.id);
     if (page) {
-        all.push(...(page.messages || []));
+      all.push(...(page.messages || []));
     }
   }
   return all;
 }
 
-document.getElementById("extract").addEventListener("click", async () => {
+/**
+ * Extracts failed recipient addresses from the selected messages and copies them to the clipboard.
+ *
+ * @returns {Promise<void>} A promise that resolves after the extraction flow completes.
+ *
+ * @example
+ * await handleExtractClick();
+ * // Updates the popup status and copies unique email/date pairs to the clipboard.
+ */
+async function handleExtractClick() {
   const status = document.getElementById("status");
   const logBox = document.getElementById("debugLogs");
-  
+
   status.textContent = "Processing...";
-  logBox.value = ""; 
+  logBox.value = "";
   logDebug("Extraction initiated.");
 
   try {
     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    
+
     if (!tabs || tabs.length === 0) {
       logDebug("ERROR: No active tab found.");
       status.textContent = "No active tab found.";
       return;
     }
-    
+
     const tab = tabs[0];
     logDebug(`Active tab resolved: ID ${tab.id}`);
 
     const messages = await getAllSelectedMessages(tab.id);
-    
+
     if (!messages.length) {
       status.textContent = "No messages selected.";
       logDebug("Abort: No messages selected.");
       return;
     }
 
-    let extractedData = new Map();
+    const extractedData = new Map();
 
     logDebug(`Processing ${messages.length} messages...`);
     for (let i = 0; i < messages.length; i++) {
@@ -93,14 +148,14 @@ document.getElementById("extract").addEventListener("click", async () => {
 
       const email = findFailedRecipient(raw);
       if (email) {
-        const cleanEmail = email.toLowerCase().trim();
-        
-        if (!extractedData.has(cleanEmail)) {
+        const normalizedEmail = email.toLowerCase().trim();
+
+        if (!extractedData.has(normalizedEmail)) {
           let msgDate = "No date";
           if (msg.date) {
             msgDate = new Date(msg.date).toLocaleDateString();
           }
-          extractedData.set(cleanEmail, msgDate);
+          extractedData.set(normalizedEmail, msgDate);
         }
       }
     }
@@ -109,18 +164,17 @@ document.getElementById("extract").addEventListener("click", async () => {
 
     if (uniqueEntries.length > 0) {
       logDebug(`Extraction complete. Unique emails found: ${uniqueEntries.length}`);
-      
+
       const resultText = uniqueEntries.map(([mail, date]) => `${mail}\t${date}`).join("\n");
-      
+
       await navigator.clipboard.writeText(resultText);
       logDebug("Payload copied to clipboard successfully.");
-      
+
       status.textContent = `Done!\nMessages processed: ${messages.length}\nUnique emails found: ${uniqueEntries.length}\n\nList and dates copied to clipboard.`;
     } else {
       logDebug("No failed recipients identified.");
       status.textContent = "No failed recipient addresses found in selected messages.";
     }
-
   } catch (e) {
     if (typeof logDebug === "function") {
       logDebug(`CRITICAL ERROR: ${e.message}`);
@@ -128,9 +182,21 @@ document.getElementById("extract").addEventListener("click", async () => {
     }
     status.textContent = `Error: ${e.message || e}`;
   }
-});
+}
 
-document.getElementById("toggleLogs").addEventListener("click", () => {
+/**
+ * Toggles the visibility of the debug log textarea in the popup.
+ *
+ * @returns {void} Does not return a value.
+ *
+ * @example
+ * toggleLogsVisibility();
+ * // Shows the logs when hidden, or hides them when visible.
+ */
+function toggleLogsVisibility() {
   const logBox = document.getElementById("debugLogs");
   logBox.style.display = (logBox.style.display === "none" || logBox.style.display === "") ? "block" : "none";
-});
+}
+
+document.getElementById("extract").addEventListener("click", handleExtractClick);
+document.getElementById("toggleLogs").addEventListener("click", toggleLogsVisibility);
