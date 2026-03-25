@@ -2,7 +2,11 @@
  * Appends a timestamped debug message to the popup log textarea.
  *
  * @param {string} msg Message text to append to the debug log output.
- * @returns {void}
+ * @returns {void} This function does not return a value.
+ *
+ * @example
+ * logDebug("Started scan");
+ * // Appends "[10:30:15 AM] Started scan" to the debug text area.
  */
 function logDebug(msg) {
   const logBox = document.getElementById("debugLogs");
@@ -17,7 +21,11 @@ function logDebug(msg) {
  * Extracts the first email address found within a raw header or body string.
  *
  * @param {?string} rawText Source text that may contain an email address.
- * @returns {?string} The first matched email address, or null.
+ * @returns {?string} The first matched email address, or `null` when no match exists.
+ *
+ * @example
+ * cleanEmail("Final-Recipient: rfc822; user@example.com");
+ * // Returns: "user@example.com"
  */
 function cleanEmail(rawText) {
   if (!rawText) return null;
@@ -29,8 +37,15 @@ function cleanEmail(rawText) {
 /**
  * Finds the bounced recipient address in a raw email message.
  *
+ * Parses common bounce headers in priority order, then falls back to embedded
+ * `message/rfc822` payloads and finally a sanitized top-level `To:` header.
+ *
  * @param {string} content Full raw message source for a bounced email.
- * @returns {?string} The failed recipient email address, or null.
+ * @returns {?string} The failed recipient email address, or `null` if none is found.
+ *
+ * @example
+ * findFailedRecipient("X-Failed-Recipients: jane@example.com\n...");
+ * // Returns: "jane@example.com"
  */
 function findFailedRecipient(content) {
   let match = content.match(/^X-Failed-Recipients:\s*(.*)/im);
@@ -62,7 +77,11 @@ function findFailedRecipient(content) {
  * Checks whether a message author looks like a bounce sender.
  *
  * @param {string} author The author/from field of a message.
- * @returns {boolean} True if the author matches known bounce sender patterns.
+ * @returns {boolean} `true` if the author matches known bounce sender patterns.
+ *
+ * @example
+ * isBounceAuthor("Mail Delivery Subsystem <mailer-daemon@example.com>");
+ * // Returns: true
  */
 function isBounceAuthor(author) {
   if (!author) return false;
@@ -79,14 +98,17 @@ function isBounceAuthor(author) {
   );
 }
 
-// ── UI helpers ──────────────────────────────────────────────
-
 /**
- * Updates the progress bar UI.
+ * Updates the progress bar to reflect current scan state.
  *
- * @param {number} current Current item index.
- * @param {number} total Total item count.
- * @param {string} label Text to display below the bar.
+ * @param {number} current Current item index in the processing loop.
+ * @param {number} total Total number of items expected in the loop.
+ * @param {string} label Human-readable progress message shown below the bar.
+ * @returns {void} This function does not return a value.
+ *
+ * @example
+ * updateProgress(3, 10, "Message 3 / 10");
+ * // Shows the progress bar at 30% with the provided label.
  */
 function updateProgress(current, total, label) {
   const container = document.getElementById("progressContainer");
@@ -99,24 +121,46 @@ function updateProgress(current, total, label) {
   text.textContent = label;
 }
 
+/**
+ * Hides the progress UI container.
+ *
+ * @returns {void} This function does not return a value.
+ *
+ * @example
+ * hideProgress();
+ * // Hides the progress bar block in the popup.
+ */
 function hideProgress() {
   document.getElementById("progressContainer").style.display = "none";
 }
 
+/**
+ * Enables or disables extraction action buttons.
+ *
+ * @param {boolean} disabled Whether action buttons should be disabled.
+ * @returns {void} This function does not return a value.
+ *
+ * @example
+ * setButtons(true);
+ * // Disables both extract and full-scan buttons.
+ */
 function setButtons(disabled) {
   document.getElementById("extract").disabled = disabled;
   document.getElementById("scanAll").disabled = disabled;
 }
 
-// ── Clipboard + result formatting ───────────────────────────
-
 /**
- * Formats extracted data and copies it to the clipboard.
+ * Formats extracted addresses, copies them to the clipboard, and updates status text.
  *
- * @param {Map<string,string>} extractedData Map of email → date.
- * @param {number} processedCount Number of messages processed.
- * @param {HTMLElement} status Status element to update.
- * @returns {Promise<void>}
+ * @param {Map<string,string>} extractedData Map of normalized email address to message date.
+ * @param {number} processedCount Number of messages processed by the current flow.
+ * @param {HTMLElement} status Status element used to display operation feedback.
+ * @returns {Promise<void>} Resolves after clipboard copy and UI updates complete.
+ * @throws {DOMException} If clipboard write access is denied by the runtime.
+ *
+ * @example
+ * await finalizeResults(new Map([["user@example.com", "1/10/2026"]]), 18, statusEl);
+ * // Copies one tab-delimited line and updates the popup status text.
  */
 async function finalizeResults(extractedData, processedCount, status) {
   const uniqueEntries = Array.from(extractedData.entries())
@@ -142,13 +186,16 @@ async function finalizeResults(extractedData, processedCount, status) {
   }
 }
 
-// ── Extract from selection (original behavior) ──────────────
-
 /**
- * Fetches every currently selected message from a Thunderbird mail tab.
+ * Fetches all currently selected messages from a Thunderbird mail tab.
  *
  * @param {number} tabId Identifier of the active Thunderbird mail tab.
- * @returns {Promise<Object[]>} Complete list of selected message objects.
+ * @returns {Promise<Object[]>} Resolves with all selected message objects across pages.
+ * @throws {Error} Propagates API errors from Thunderbird message listing calls.
+ *
+ * @example
+ * const selected = await getAllSelectedMessages(42);
+ * // Returns an array of message objects selected in tab 42.
  */
 async function getAllSelectedMessages(tabId) {
   logDebug(`Fetching selected messages for tabId: ${tabId}`);
@@ -163,6 +210,16 @@ async function getAllSelectedMessages(tabId) {
   return all;
 }
 
+/**
+ * Handles the Extract button click for selected messages.
+ *
+ * @returns {Promise<void>} Resolves after the extraction workflow finishes.
+ * @throws {Error} Handles runtime exceptions internally and surfaces them in UI status.
+ *
+ * @example
+ * await handleExtractClick();
+ * // Processes selected messages, extracts failed recipients, and copies results.
+ */
 async function handleExtractClick() {
   const status = document.getElementById("status");
   const logBox = document.getElementById("debugLogs");
@@ -219,13 +276,15 @@ async function handleExtractClick() {
   }
 }
 
-// ── Scan all folders ────────────────────────────────────────
-
 /**
- * Recursively collects all folders from a given root folder list.
+ * Recursively collects all folders from a Thunderbird folder tree.
  *
  * @param {Object[]} folders Array of Thunderbird MailFolder objects.
- * @returns {Object[]} Flat array of all folders including nested subfolders.
+ * @returns {Object[]} Flat array of every folder, including nested subfolders.
+ *
+ * @example
+ * const all = collectAllFolders([{ name: "Inbox", subFolders: [{ name: "Archive", subFolders: [] }] }]);
+ * // Returns two folder objects: Inbox and Archive.
  */
 function collectAllFolders(folders) {
   const result = [];
@@ -239,9 +298,14 @@ function collectAllFolders(folders) {
 }
 
 /**
- * Scans every folder in every account for bounce messages and extracts recipients.
+ * Handles the full-mailbox scan across all accounts and folders.
  *
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Resolves after folder traversal, extraction, and status updates.
+ * @throws {Error} Handles runtime exceptions internally and reports them in UI status.
+ *
+ * @example
+ * await handleScanAllClick();
+ * // Scans all folders, extracts unique bounced recipients, and copies output.
  */
 async function handleScanAllClick() {
   const status = document.getElementById("status");
@@ -358,14 +422,19 @@ async function handleScanAllClick() {
   }
 }
 
-// ── Toggle debug logs ───────────────────────────────────────
-
+/**
+ * Toggles visibility for the debug log textarea.
+ *
+ * @returns {void} This function does not return a value.
+ *
+ * @example
+ * toggleLogsVisibility();
+ * // Shows or hides the debug log panel depending on current state.
+ */
 function toggleLogsVisibility() {
   const logBox = document.getElementById("debugLogs");
   logBox.style.display = (logBox.style.display === "none" || logBox.style.display === "") ? "block" : "none";
 }
-
-// ── Event listeners ─────────────────────────────────────────
 
 document.getElementById("extract").addEventListener("click", handleExtractClick);
 document.getElementById("scanAll").addEventListener("click", handleScanAllClick);
