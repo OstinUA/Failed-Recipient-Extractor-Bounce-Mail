@@ -3,18 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <style>
-      body { font: 13px sans-serif; width: 400px; margin: 12px; background-color: #f9f9f9; }
+      body { font: 13px sans-serif; width: 420px; margin: 12px; background-color: #f9f9f9; }
       .container { background: white; padding: 10px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-      .button-group { display: flex; gap: 8px; }
-      
+      .button-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
       button { padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-      
-      #extract { flex-grow: 1; background-color: #21aeb3; color: white; width: 100%; }
-      #extract:hover { background-color: #1d969a; }
-      
+      button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      #extract { flex-grow: 1; background-color: #21aeb3; color: white; }
+      #extract:hover:not(:disabled) { background-color: #1d969a; }
+
+      #scanAll { flex-grow: 1; background-color: #e67e22; color: white; }
+      #scanAll:hover:not(:disabled) { background-color: #cf6d17; }
+
       #toggleLogs { flex-shrink: 0; background-color: #f0f0f0; color: #555; font-size: 1px; padding: 0 5px; }
       #toggleLogs:hover { background-color: #e4e4e4; }
-      
+
+      .progress-container { display: none; margin-top: 10px; }
+      .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
+      .progress-fill { height: 100%; background: linear-gradient(90deg, #21aeb3, #e67e22); width: 0%; transition: width 0.3s ease; border-radius: 4px; }
+      .progress-text { font-size: 11px; color: #666; margin-top: 4px; }
+
       #status { margin-top: 10px; white-space: pre-wrap; font-size: 11px; color: #333; border-top: 1px solid #eee; padding-top: 5px; }
       #debugLogs { display: none; width: 100%; height: 180px; margin-top: 15px; font-size: 11px; background: #e4e4e4; color: #000000; border: none; padding: 8px; box-sizing: border-box; resize: none; font-family: monospace; border-radius: 4px; }
     </style>
@@ -22,11 +31,20 @@
   <body>
     <div class="container">
       <div class="button-group">
-        <button id="extract">Extract Unique Emails</button>
+        <button id="extract">Extract Selected</button>
+        <button id="scanAll">Scan All Folders</button>
         <button id="toggleLogs" title="Toggle debug logs"></button>
       </div>
-      <div id="status">Select messages and click the button.</div>
-      
+
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText"></div>
+      </div>
+
+      <div id="status">Select messages and click "Extract Selected", or scan all folders automatically.</div>
+
       <textarea id="debugLogs" readonly placeholder="Waiting for actions..."></textarea>
     </div>
     <script src="popup.js"></script>

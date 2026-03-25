@@ -2,7 +2,7 @@
 
 > A Thunderbird power-tool that mines bounce messages and outputs a deduplicated, clipboard-ready failed-recipient list in one click.
 
-[![Version](https://img.shields.io/badge/version-1.3.1-1f6feb?style=for-the-badge)](manifest.json)
+[![Version](https://img.shields.io/badge/version-1.4.1-1f6feb?style=for-the-badge)](manifest.json)
 [![Thunderbird](https://img.shields.io/badge/Thunderbird-102.0%2B-ca3026?style=for-the-badge&logo=thunderbird&logoColor=white)](https://www.thunderbird.net/)
 [![Build Status](https://img.shields.io/badge/build-passing-2ea44f?style=for-the-badge)](#testing)
 [![Tests](https://img.shields.io/badge/tests-manual%20smoke%20tested-8250df?style=for-the-badge)](#testing)
