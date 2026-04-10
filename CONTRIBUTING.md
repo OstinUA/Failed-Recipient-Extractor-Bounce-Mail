@@ -1,215 +1,60 @@
-# Contributing to Failed Recipient Extractor [Bounce Mail]
+<div align="left">
 
-Thanks for investing your time in this project. Contributions are welcome whether you're fixing parser edge-cases, tightening UX, or improving release ergonomics for Thunderbird operators.
+<pre>
+ ██████╗ ██████╗ ███╗   ██╗████████╗██████╗ ██╗██████╗ ██╗   ██╗████████╗██╗███╗   ██╗ ██████╗ 
+██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██║██╔══██╗██║   ██║╚══██╔══╝██║████╗  ██║██╔════╝ 
+██║     ██║   ██║██╔██╗ ██║   ██║   ██████╔╝██║██████╔╝██║   ██║   ██║   ██║██╔██╗ ██║██║  ███╗
+██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██╗██║██╔══██╗██║   ██║   ██║   ██║██║╚██╗██║██║   ██║
+╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║██║██████╔╝╚██████╔╝   ██║   ██║██║ ╚████║╚██████╔╝
+ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═════╝  ╚═════╝    ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝ 
+                                                                                               
+ ██████╗ ██╗   ██╗██╗██████╗ ███████╗
+██╔════╝ ██║   ██║██║██╔══██╗██╔════╝
+██║  ███╗██║   ██║██║██║  ██║█████╗  
+██║   ██║██║   ██║██║██║  ██║██╔══╝  
+╚██████╔╝╚██████╔╝██║██████╔╝███████╗
+ ╚═════╝  ╚═════╝ ╚═╝╚═════╝ ╚══════╝
+</pre>
 
-This add-on is used in real-world bounce management workflows, so reliability and reproducibility matter more than flashy rewrites. Keep diffs surgical, test behavior against real samples, and document decisions.
+</div>
 
-## I Have a Question
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-3e80ed?style=for-the-badge&logo=github&logoColor=white)](https://github.com/OstinUA)
+[![Open Source](https://img.shields.io/badge/Open_Source-Yes-brightgreen?style=for-the-badge&logo=open-source&logoColor=white)](https://github.com/OstinUA)
+[![Views](https://img.shields.io/badge/Profile_Views-%31&#56;%33-blueviolet?style=for-the-badge)](https://github.com/OstinUA)
+[![OstinUA](https://capsule-render.vercel.app/api?type=rect&color=3e80ed&height=2&)](https://github.com/OstinUA)
 
-Please **do not** open GitHub Issues for usage or support questions.
 
-Issues are reserved for actionable bugs and concrete feature work. For questions, use one of these channels:
+Hello! Thank you for your interest in contributing to this project. I am always open to any help, whether it's fixing bugs, adding new features, improving documentation, or just sharing fresh ideas. 
 
-- GitHub Discussions (preferred, if enabled for this repository)
-- Thunderbird/WebExtension community channels
-- Your team/internal chat if you are using an organization fork
+This document is not a strict set of rules, but a simple guide on how we can comfortably and productively work together.
 
-When asking questions, include:
+## ⬢ How You Can Help
 
-- Thunderbird version
-- What you tried already
-- Relevant log output from the extension debug panel
+* **Found a bug?** Open an Issue and briefly describe what went wrong and how to reproduce it.
+* **Have a cool idea?** Create an Issue with your proposal. It's always best to discuss an idea first before spending time writing code.
+* **Improving documentation.** Fixing typos, expanding instructions, or translating — absolutely any help is valuable.
+* **Ready to write code?** Feel free to fork the repository and open a Pull Request.
 
-## Reporting Bugs
+## ⬢ Pull Request Process
 
-Great bug reports drastically reduce turnaround time.
+The workflow here is as straightforward as possible:
 
-### Before opening a bug
+1. Fork this repository.
+2. Create a new branch for your changes (`git checkout -b feature/my-awesome-idea` or `git checkout -b bugfix/issue-123`).
+3. Make your changes and commit them (`git commit -m "Add new awesome feature"`).
+4. Push the changes to your fork (`git push origin feature/my-awesome-idea`).
+5. Open a Pull Request to this repository.
 
-- Search existing open/closed Issues for duplicates.
-- Verify behavior on the latest repository version.
-- Re-test with a minimal set of sample bounce messages.
+## ⬢ A Few Simple Requests
 
-### Include this environment block
+* Try to stick to the code style already used in the project.
+* Make your commit messages clear so it's easy to understand what changed.
+* If your Pull Request resolves a specific Issue, mention its number in the description (e.g., `Closes #42`).
+* If the logic changes, please update the relevant section in the README.
 
-```text
-OS:                e.g. Windows 11 / Ubuntu 24.04 / macOS 14
-Thunderbird:       e.g. 128.x
-Add-on version:    e.g. 1.3.1
-Install mode:      Temporary add-on / packaged build
-Mail source type:  IMAP / POP / Local folder
-```
+## ⬢ Feedback
 
-### Steps to reproduce
+I try to review all Issues and Pull Requests as quickly as possible. If I haven't replied in a while, don't hesitate to ping me in the comments.
 
-Provide a deterministic sequence:
-
-1. Which folder/account you opened.
-2. Exactly how many and what type of messages were selected.
-3. Which UI action was triggered.
-4. What status/debug output appeared.
-5. What clipboard output (if any) was produced.
-
-### Expected vs actual behavior
-
-Include both:
-
-- **Expected:** what should have happened
-- **Actual:** what happened instead
-
-If possible, sanitize and attach a representative raw message snippet containing headers like `X-Failed-Recipients`, `Final-Recipient`, or `Original-Recipient`.
-
-## Suggesting Enhancements
-
-Feature requests are welcome when they solve concrete operator pain.
-
-A high-signal enhancement proposal should include:
-
-- **Problem statement:** what currently blocks or slows users.
-- **Why now:** business/operational reason this feature matters.
-- **Proposed behavior:** exact UX or parser behavior.
-- **Use cases:** at least 1-2 real workflows this improves.
-- **Trade-offs:** any complexity, permission, or compatibility impact.
-
-Low-context requests like “add AI”, “support everything”, or “rewrite in framework X” will likely be deprioritized.
-
-## Local Development / Setup
-
-### 1) Fork and clone
-
-```bash
-# Fork on GitHub first, then clone your fork
-git clone https://github.com/<your-user>/Failed-Recipient-Extractor-Bounce-Mail.git
-cd Failed-Recipient-Extractor-Bounce-Mail
-```
-
-### 2) Create a working branch
-
-```bash
-git checkout -b feature/short-description
-```
-
-### 3) Load extension in Thunderbird
-
-```text
-Thunderbird -> Tools -> Add-ons and Themes
--> Gear icon -> Debug Add-ons -> Load Temporary Add-on...
--> Select ./manifest.json
-```
-
-### 4) Run local sanity checks
-
-```bash
-# JavaScript parse check
-node --check mainPopup/popup.js
-```
-
-### 5) Validate behavior manually
-
-- Select sample bounce messages.
-- Run extraction.
-- Verify clipboard payload and debug logs.
-
-> There is currently no `.env` setup in this repo.
-
-## Pull Request Process
-
-### Branch naming strategy
-
-Use descriptive branch names:
-
-- `feature/<short-feature-name>`
-- `bugfix/<issue-id-or-short-name>`
-- `docs/<scope>`
-- `chore/<scope>`
-
-Examples:
-
-- `feature/final-recipient-parser-hardening`
-- `bugfix/42-empty-selection-status`
-
-### Commit message format
-
-Use Conventional Commits:
-
-- `feat: add RFC822 fallback for nested bounce payloads`
-- `fix: skip postmaster aliases in To-header fallback`
-- `docs: rewrite README and contribution workflow`
-
-### Keep branch synced
-
-Before opening a PR, rebase/sync with the default branch:
-
-```bash
-git fetch upstream
-git rebase upstream/main
-```
-
-(If your fork doesn’t have `upstream` configured, add it first.)
-
-### PR description checklist
-
-Your PR should include:
-
-- Linked issue(s): `Closes #123` / `Refs #123`
-- Problem summary and root cause
-- What changed and why
-- Manual test evidence
-- Screenshots/gifs for visible UI changes in popup behavior
-- Backward compatibility notes (especially around Thunderbird versions)
-
-Small focused PRs are preferred over mega-diffs.
-
-## Styleguides
-
-### Code style
-
-- Keep implementation vanilla and dependency-free unless there is a strong justification.
-- Prefer explicit, readable logic over clever abstractions.
-- Match existing project style in `mainPopup/popup.js` and `popup.html`.
-- Avoid unrelated refactors in bugfix PRs.
-
-### Linters/formatters
-
-This repository does not currently enforce ESLint/Prettier in CI.
-
-Contributor expectation:
-
-- Keep formatting consistent with existing files.
-- Run at least `node --check mainPopup/popup.js`.
-- If you use local lint/format tooling, avoid reformatting unrelated lines.
-
-### Architecture constraints
-
-- Preserve Thunderbird MailExtension compatibility.
-- Avoid introducing build tooling unless maintainers explicitly request it.
-- Keep permission scope minimal in `manifest.json`.
-
-## Testing
-
-All behavior-affecting changes should be validated with manual test coverage.
-
-Minimum expectation for parser/UI changes:
-
-1. Positive case: known bounce messages produce expected recipients.
-2. Negative case: non-bounce messages do not produce false positives.
-3. Dedupe/sorting case: duplicate recipients collapse and remain ordered.
-4. Clipboard case: output can be pasted as tab-separated rows.
-
-Recommended command:
-
-```bash
-node --check mainPopup/popup.js
-```
-
-Add test notes directly to your PR so reviewers can replay your scenario quickly.
-
-## Code Review Process
-
-- Maintainers review incoming PRs for correctness, scope control, and maintainability.
-- At least one maintainer approval is expected before merge.
-- Requested changes should be addressed with follow-up commits or a clean rebase.
-- Keep review discussion technical and focused; include logs/evidence when disputing behavior.
-- PRs with failing checks, missing reproduction details, or unclear impact may be held until clarified.
-
-Thanks again for contributing and helping keep this tool production-useful for bounce operations.
+The main rule is mutual respect. Welcome, and thank you for your contribution!
+[![OstinUA](https://capsule-render.vercel.app/api?type=rect&color=3e80ed&height=2&)](https://github.com/OstinUA)
